@@ -30,7 +30,18 @@ describe('runExercise()', () => {
         const spy = jest.spyOn(console, 'log');
         runExercise();
         expect(spy).toHaveBeenCalledTimes(7);
-    });
+    })
+    it('console.logs() the right string for its 7 calls', () => {
+        const spy = jest.spyOn(console, 'log');
+        runExercise();
+        expect(spy).toHaveBeenNthCalledWith(1, '#');
+        expect(spy).toHaveBeenNthCalledWith(2, '##');
+        expect(spy).toHaveBeenNthCalledWith(3, '###');
+        expect(spy).toHaveBeenNthCalledWith(4, '####');
+        expect(spy).toHaveBeenNthCalledWith(5, '#####');
+        expect(spy).toHaveBeenNthCalledWith(6, '######');
+        expect(spy).toHaveBeenNthCalledWith(7, '#######');
+    })
     it('returns an array of strings resembling a 90 degree triangle of pound characters', () => {
         const res = [
             '#',
