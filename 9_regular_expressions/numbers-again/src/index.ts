@@ -1,0 +1,1 @@
+export const JSNumberRegex = /^(\+|-|)((\.\d+)|(\d+\.?\d*))([eE](\+|-|)\d+)?$/;
