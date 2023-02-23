@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "lib": ["es6"],
+      "allowJs": true,
+      "outDir": "build",
+      // "rootDir": "src",
+      "rootDirs": ["src", "../../7_project_a_robot/robot/src", "../../4_data_structures_objects_and_arrays/deep-comparison/src"],
+      "strict": true,
+      "esModuleInterop": true,
+      "types": ["node", "jest", "@types/jest", "@types/node"],
+      "skipLibCheck": true,
+      "sourceMap": true
+    },
+    "include": ["src/**/*"],
+    // "exclude": ["src/**/*.spec.ts"]
+}
+  
