@@ -6,7 +6,7 @@
       "allowJs": true,
       "outDir": "build",
       // "rootDir": "src",
-      "rootDirs": ["src", "../arrays/src", "../comments/src", "../fixing-scope/src"],
+      "rootDirs": ["src", "../programming-language/src"],
       "strict": true,
       "esModuleInterop": true,
       "types": ["node", "jest", "@types/jest", "@types/node"],

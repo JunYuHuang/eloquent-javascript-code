@@ -26,7 +26,7 @@ type exprObj = {
 
 function parseExpression(program: string) {
     program = skipSpace(program);
-    let match, expr;
+    let match: RegExpExecArray | null, expr: exprObj;
     if (match = /^"([^"]*)"/.exec(program)) {
         expr = { type: "value", value: match[1] };
     } else if (match = /^\d+\b/.exec(program)) {
@@ -40,6 +40,14 @@ function parseExpression(program: string) {
     return parseApply(expr, program.slice(match[0].length));
 }
 
+// // Original skipSpace()
+// function skipSpace(string: string) {
+//     let first = string.search(/\S/);
+//     if (first == -1) return "";
+//     return string.slice(first);
+// }
+
+// Modified skipSpace() for `Comments` exercise
 function skipSpace(string: string) {
     let first = string.search(/\S/);
     if (first == -1) return "";
@@ -146,6 +154,24 @@ specialForms.define = (args: any[], scope: any) => {
     return value;
 };
 
+// Add-on from "Fixing Scope" exercise
+specialForms.set = (args: any[], scope: any) => {
+    if (args.length != 2 || args[0].type != "word") {
+        throw new SyntaxError("Incorrect use of set");
+    }
+    let bindingName = args[0].name;
+    let value = evaluate(args[1], scope);
+    while (scope != null) {
+        let bindingExists = Object.prototype.hasOwnProperty.call(scope, bindingName);
+        if (bindingExists) {
+            scope[bindingName] = value;
+            return value;
+        }
+        scope = Object.getPrototypeOf(scope);
+    }
+    throw new ReferenceError(`Cannot set value to non-existent binding or variable ${bindingName}!`);
+}
+
 var topScope = Object.create(null);
 
 topScope.true = true;
@@ -200,4 +226,6 @@ export {
     evaluate,
     topScope,
     run,
+    skipSpace,
+    specialForms
 }
