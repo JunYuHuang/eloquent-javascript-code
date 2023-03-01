@@ -51,7 +51,10 @@ function parseExpression(program: string) {
 function skipSpace(string: string) {
     let first = string.search(/\S/);
     if (first == -1) return "";
-    return string.slice(first);
+    let spaceSkippedStr = string.slice(first);
+    const whitespaceOrCommentRegex = /^(\s|#.*\n)*/;
+    const execArr = whitespaceOrCommentRegex.exec(spaceSkippedStr);
+    return execArr ? spaceSkippedStr.slice(execArr[0].length) : spaceSkippedStr;
 }
 
 function parseApply(expr: exprObj, program: string): any {
