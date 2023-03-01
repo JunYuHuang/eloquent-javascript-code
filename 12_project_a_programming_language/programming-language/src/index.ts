@@ -1,3 +1,23 @@
+/* 
+
+Project: Egg, a Programming Language
+
+Intro
+- everything is an expression
+- expression types (1 of the following):
+    - binding: name with no special meaning
+    - number: digit sequence
+    - string: char sequence in double quotes
+    - application -- function calls, constructs like `if` or `while`
+- call functions with comma-seperated arguments in parentheses like in JS
+- uses `do` construct to do multiple things in a sequence to replace blocks
+
+Parser Notes
+- represents Egg programs with the expression object data structure
+- transforms text input into expression objects
+
+*/
+
 // TYPES
 type exprObj = {
     type: string,
@@ -167,6 +187,13 @@ specialForms.fun = (args: any[], scope: any) => {
         return evaluate(body, localScope);
     };
 };
+
+// Add-on from `Arrays` exercise
+import { array, length, element } from "../../arrays/src/index";
+
+topScope.array = array;
+topScope.length = length;
+topScope.element = element;
 
 export {
     parse,
