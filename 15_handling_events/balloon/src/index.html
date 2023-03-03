@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<p>🎈</p>
+
+<script>
+  // Your code here
+  const balloonPara = document.querySelector("p");
+  let size = 16;
+  const MAX_SIZE = 320;
+  function setBalloonSize(newSize) {
+    size = newSize;
+    balloonPara.style.fontSize = newSize.toString() + "px";
+  }
+  setBalloonSize(16);
+
+  function blowUpBalloon() {
+    balloonPara.textContent = "💥";
+    document.body.removeEventListener("keydown", handleBalloon);
+  }
+
+  function handleBalloon(event) {
+    if (event.key == "ArrowUp") {
+      if (size >= MAX_SIZE) {
+        blowUpBalloon();
+      }
+      setBalloonSize(Math.round(size + size * 0.1));
+      event.preventDefault();
+    } else if (event.key === "ArrowDown") {
+      setBalloonSize(Math.round(size - size * 0.1));
+      event.preventDefault();
+    }
+  }
+
+  document.body.addEventListener("keydown", handleBalloon);
+</script>
