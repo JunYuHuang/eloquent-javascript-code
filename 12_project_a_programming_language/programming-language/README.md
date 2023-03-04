@@ -1,19 +1,6 @@
-# Borrowing a Method
+# Project: A Programming Language
 
-Earlier in the chapter I mentioned that an object’s `hasOwnProperty` can be
-used as a more robust alternative to the `in` operator when you want to ignore
-the prototype’s properties. But what if your map needs to include the word `"hasOwnProperty"`? You won’t be able to call that method anymore because the
-object’s own property hides the method value.
-
-Can you think of a way to call `hasOwnProperty` on an object that has its own
-property by that name?
-
-## Exercise Hints
-
-Remember that methods that exist on plain objects come from `Object.prototype`.
-
-Also remember that you can call a function with a specific `this` binding
-by using its `call` method.
+The project code is copied and modified from the corresponding code sample on [Eloquent JavaScript](https://eloquentjavascript.net/code/chapter/16_game.zip).
 
 # Script Notes - modified template based on [simple-typescript-starter](https://github.com/stemmlerjs/simple-typescript-starter)
 
