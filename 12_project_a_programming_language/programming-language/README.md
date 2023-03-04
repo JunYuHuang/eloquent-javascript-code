@@ -1,6 +1,6 @@
 # Project: A Programming Language
 
-The project code is copied and modified from the corresponding code sample on [Eloquent JavaScript](https://eloquentjavascript.net/code/chapter/16_game.zip).
+The project code is copied and modified from the corresponding code sample on [Eloquent JavaScript](https://eloquentjavascript.net/code/chapter/12_language.js).
 
 # Script Notes - modified template based on [simple-typescript-starter](https://github.com/stemmlerjs/simple-typescript-starter)
 
