@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<tab-panel>
+  <div data-tabname="one">Tab one</div>
+  <div data-tabname="two">Tab two</div>
+  <div data-tabname="three">Tab three</div>
+</tab-panel>
+<script>
+  function asTabs(node) {
+    const tabEls = Array.from(node.children);
+    let activeTab = tabEls[0].dataset.tabname;
+    let tabNameToEls = Object.create(null);
+
+    function toggleTab(prev, target) {
+      if (prev === target) return;
+      tabNameToEls[prev].tab.style.display = "none";
+      tabNameToEls[prev].button.style.fontWeight = "normal";
+      tabNameToEls[target].tab.style.display = "block";
+      tabNameToEls[target].button.style.fontWeight = "bold";
+      activeTab = target;
+    }
+
+    function createButton(name) {
+      const button = document.createElement("button");
+      button.textContent = name;
+      return button;
+    }
+
+    for (const el of tabEls) {
+      let name = el.dataset.tabname;
+      const button = createButton(name);
+      if (name !== activeTab) {
+        el.style.display = "none";
+      } else {
+        button.style.fontWeight = "bold";
+      }
+      tabNameToEls[name] = {
+        tab: el,
+        button,
+      };
+      node.insertBefore(button, tabEls[0]);
+    }
+
+    node.addEventListener("click", (event) => {
+      if (event.target.nodeName !== "BUTTON") return;
+      toggleTab(activeTab, event.target.textContent);
+    });
+  }
+  asTabs(document.querySelector("tab-panel"));
+</script>
