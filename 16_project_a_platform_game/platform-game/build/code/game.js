@@ -9,6 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+// Notes
+// - time is in seconds
 const simpleLevelPlan = `
 ......................
 ..#................#..
@@ -212,12 +214,14 @@ const levelChars = {
     "#": "wall",
     "+": "lava",
     "@": Player,
-    o: Coin,
+    "o": Coin,
     "=": Lava,
     "|": Lava,
-    v: Lava,
+    "v": Lava,
 };
 const simpleLevel = new Level(simpleLevelPlan);
+console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
+// 22 by 9
 function elt(name, attrs, ...children) {
     let dom = document.createElement(name);
     for (let attr of Object.keys(attrs)) {

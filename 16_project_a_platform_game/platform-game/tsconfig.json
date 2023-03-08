@@ -7,7 +7,7 @@
       "outDir": "build/code",
       "rootDir": "src",
       "strict": true,
-      "noImplicitAny": false,
+      "noImplicitAny": true,
       "esModuleInterop": true,
       "types": ["node", "jest", "@types/jest", "@types/node"],
       "skipLibCheck": true,

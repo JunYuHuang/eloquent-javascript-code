@@ -1,5 +1,8 @@
 /// <reference path="./game.d.ts" />
 
+// Notes
+// - time is in seconds
+
 const simpleLevelPlan = `
 ......................
 ..#................#..
@@ -73,7 +76,7 @@ class State {
     return this.actors.find((a) => a.type == "player");
   }
 
-  update(time, keys) {
+  update(time: number, keys: KeysObj) {
     let actors = this.actors
       .map(actor => actor.update(time, this, keys));
     let newState = new State(this.level, actors, this.status);
@@ -128,7 +131,7 @@ class Player {
     return new Player(pos.plus(new Vec(0, -0.5)), new Vec(0, 0));
   }
 
-  update(time, state: State, keys) {
+  update(time: number, state: State, keys: KeysObj) {
     let xSpeed = 0;
     if (keys.ArrowLeft) xSpeed -= playerXSpeed;
     if (keys.ArrowRight) xSpeed += playerXSpeed;
@@ -183,7 +186,7 @@ class Lava {
     return new State(state.level, state.actors, "lost");
   }
 
-  update(time, state: State) {
+  update(time: number, state: State) {
     let newPos = this.pos.plus(this.speed.times(time));
     if (!state.level.touches(newPos, this.size, "wall")) {
       return new Lava(newPos, this.speed, this.reset);
@@ -225,7 +228,7 @@ class Coin {
     return new State(state.level, filtered, status);
   }
 
-  update(time) {
+  update(time: number) {
     let wobble = this.wobble + time * wobbleSpeed;
     let wobblePos = Math.sin(wobble) * wobbleDist;
     return new Coin(this.basePos.plus(new Vec(0, wobblePos)),
@@ -235,20 +238,22 @@ class Coin {
 
 const COIN_SIZE = new Vec(0.6, 0.6);
 
-const levelChars = {
+const levelChars: CharToValue = {
   ".": "empty",
   "#": "wall",
   "+": "lava",
   "@": Player,
-  o: Coin,
+  "o": Coin,
   "=": Lava,
   "|": Lava,
-  v: Lava,
+  "v": Lava,
 };
 
 const simpleLevel = new Level(simpleLevelPlan);
+console.log(`${simpleLevel.width} by ${simpleLevel.height}`);
+// 22 by 9
 
-function elt(name: string, attrs, ...children: Node[]) {
+function elt(name: string, attrs: AttributesObj, ...children: Node[]) {
   let dom = document.createElement(name);
   for (let attr of Object.keys(attrs)) {
     dom.setAttribute(attr, attrs[attr]);
@@ -356,9 +361,9 @@ const playerXSpeed = 7;
 const gravity = 30;
 const jumpSpeed = 17;
 
-function trackKeys(keys) {
+function trackKeys(keys: string[]) {
   let down = Object.create(null);
-  function track(event) {
+  function track(event: KeyboardEvent) {
     if (keys.includes(event.key)) {
       down[event.key] = event.type == "keydown";
       event.preventDefault();
@@ -371,9 +376,9 @@ function trackKeys(keys) {
 
 const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
-function runAnimation(frameFunc) {
-  let lastTime = null;
-  function frame(time) {
+function runAnimation(frameFunc: FrameFunction) {
+  let lastTime: number | null = null;
+  function frame(time: number) {
     if (lastTime != null) {
       let timeStep = Math.min(time - lastTime, 100) / 1000;
       if (frameFunc(timeStep) === false) return;
@@ -389,7 +394,7 @@ function runLevel(level: Level, Display: any) {
   let state = State.start(level);
   let ending = 1;
   return new Promise((resolve) => {
-    runAnimation((time) => {
+    runAnimation((time: number) => {
       state = state.update(time, arrowKeys);
       display.syncState(state);
       if (state.status == "playing") {
