@@ -1,0 +1,1 @@
+declare type Status = "playing" | "won" | "lost";
