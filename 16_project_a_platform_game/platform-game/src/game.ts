@@ -36,7 +36,7 @@ class Level {
     });
   }
 
-  touches(pos, size, type) {
+  touches(pos: Vec, size: Vec, type: EntityString) {
     let xStart = Math.floor(pos.x);
     let xEnd = Math.ceil(pos.x + size.x);
     let yStart = Math.floor(pos.y);
@@ -59,13 +59,13 @@ class State {
   actors: any[];
   status: Status;
 
-  constructor(level, actors, status) {
+  constructor(level: Level, actors: any[], status: Status) {
     this.level = level;
     this.actors = actors;
     this.status = status;
   }
 
-  static start(level) {
+  static start(level: Level) {
     return new State(level, level.startActors, "playing");
   }
 
@@ -98,14 +98,14 @@ class Vec {
   x: number;
   y: number;
 
-  constructor(x, y) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
-  plus(other) {
+  plus(other: Vec) {
     return new Vec(this.x + other.x, this.y + other.y);
   }
-  times(factor) {
+  times(factor: number) {
     return new Vec(this.x * factor, this.y * factor);
   }
 };
@@ -115,7 +115,7 @@ class Player {
   speed: Vec;
   size: Vec = PLAYER_SIZE;
 
-  constructor(pos, speed) {
+  constructor(pos: Vec, speed: Vec) {
     this.pos = pos;
     this.speed = speed;
   }
@@ -124,11 +124,11 @@ class Player {
     return "player";
   }
 
-  static create(pos) {
+  static create(pos: Vec) {
     return new Player(pos.plus(new Vec(0, -0.5)), new Vec(0, 0));
   }
 
-  update(time, state, keys) {
+  update(time, state: State, keys) {
     let xSpeed = 0;
     if (keys.ArrowLeft) xSpeed -= playerXSpeed;
     if (keys.ArrowRight) xSpeed += playerXSpeed;
@@ -156,10 +156,10 @@ const PLAYER_SIZE = new Vec(0.8, 1.5);
 class Lava {
   pos: Vec;
   speed: Vec;
-  reset: Vec;
+  reset: Vec | undefined;
   size: Vec = LAVA_SIZE;
 
-  constructor(pos, speed, reset?) {
+  constructor(pos: Vec, speed: Vec, reset?: Vec) {
     this.pos = pos;
     this.speed = speed;
     this.reset = reset;
@@ -169,7 +169,7 @@ class Lava {
     return "lava";
   }
 
-  static create(pos, ch) {
+  static create(pos: Vec, ch: string) {
     if (ch == "=") {
       return new Lava(pos, new Vec(2, 0));
     } else if (ch == "|") {
@@ -179,11 +179,11 @@ class Lava {
     }
   }
 
-  collide(state) {
+  collide(state: State) {
     return new State(state.level, state.actors, "lost");
   }
 
-  update(time, state) {
+  update(time, state: State) {
     let newPos = this.pos.plus(this.speed.times(time));
     if (!state.level.touches(newPos, this.size, "wall")) {
       return new Lava(newPos, this.speed, this.reset);
@@ -203,7 +203,7 @@ class Coin {
   wobble: number;
   size: Vec = COIN_SIZE;
 
-  constructor(pos, basePos, wobble) {
+  constructor(pos: Vec, basePos: Vec, wobble: number) {
     this.pos = pos;
     this.basePos = basePos;
     this.wobble = wobble;
@@ -213,12 +213,12 @@ class Coin {
     return "coin";
   }
 
-  static create(pos) {
+  static create(pos: Vec) {
     let basePos = pos.plus(new Vec(0.2, 0.1));
     return new Coin(basePos, basePos, Math.random() * Math.PI * 2);
   }
 
-  collide(state) {
+  collide(state: State) {
     let filtered = state.actors.filter(a => a != this);
     let status = state.status;
     if (!filtered.some(a => a.type == "coin")) status = "won";
@@ -248,7 +248,7 @@ const levelChars = {
 
 const simpleLevel = new Level(simpleLevelPlan);
 
-function elt(name, attrs, ...children) {
+function elt(name: string, attrs, ...children: Node[]) {
   let dom = document.createElement(name);
   for (let attr of Object.keys(attrs)) {
     dom.setAttribute(attr, attrs[attr]);
@@ -261,9 +261,9 @@ function elt(name, attrs, ...children) {
 
 class DOMDisplay {
   dom: Element;
-  actorLayer;
+  actorLayer: Element | null;
 
-  constructor(parent, level) {
+  constructor(parent: Element, level: Level) {
     this.dom = elt("div", { class: "game" }, drawGrid(level));
     this.actorLayer = null;
     parent.appendChild(this.dom);
@@ -273,7 +273,7 @@ class DOMDisplay {
     this.dom.remove();
   }
 
-  syncState(state) {
+  syncState(state: State) {
     if (this.actorLayer) this.actorLayer.remove();
     this.actorLayer = drawActors(state.actors);
     this.dom.appendChild(this.actorLayer);
@@ -281,7 +281,7 @@ class DOMDisplay {
     this.scrollPlayerIntoView(state);
   }
 
-  scrollPlayerIntoView(state) {
+  scrollPlayerIntoView(state: State) {
     let width = this.dom.clientWidth;
     let height = this.dom.clientHeight;
     let margin = width / 3;
@@ -309,7 +309,7 @@ class DOMDisplay {
 
 const scale = 20;
 
-function drawGrid(level) {
+function drawGrid(level: Level) {
   return elt(
     "table",
     {
@@ -326,7 +326,7 @@ function drawGrid(level) {
   );
 }
 
-function drawActors(actors) {
+function drawActors(actors: any[]) {
   return elt(
     "div",
     {},
@@ -341,7 +341,7 @@ function drawActors(actors) {
   );
 }
 
-function overlap(actor1, actor2) {
+function overlap(actor1: any, actor2: any) {
   return (
     actor1.pos.x + actor1.size.x > actor2.pos.x &&
     actor1.pos.x < actor2.pos.x + actor2.size.x &&
@@ -384,7 +384,7 @@ function runAnimation(frameFunc) {
   requestAnimationFrame(frame);
 }
 
-function runLevel(level, Display) {
+function runLevel(level: Level, Display: any) {
   let display = new Display(document.body, level);
   let state = State.start(level);
   let ending = 1;
@@ -406,7 +406,7 @@ function runLevel(level, Display) {
   });
 }
 
-async function runGame(plans, Display) {
+async function runGame(plans: string[], Display: any) {
   for (let level = 0; level < plans.length;) {
     let status = await runLevel(new Level(plans[level]), Display);
     if (status == "won") level++;
