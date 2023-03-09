@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<script src="../platform-game/build/code/game.js"></script>
+<script src="../platform-game/build/code/levels.js"></script>
+<link rel="stylesheet" href="../platform-game/build/game.css" />
+<body>
+  <script>
+    async function runGame(plans, Display) {
+      let lives = 3;
+      for (let level = 0; level < plans.length; ) {
+        if (lives === 0) break;
+        console.log(`Level: ${level + 1}, Lives: ${lives}`);
+        let status = await runLevel(new Level(plans[level]), Display);
+        if (status == "lost") lives--;
+        if (status == "won") level++;
+      }
+      const gameEndMessage = lives > 0 ? "You've won!" : "Game Over!";
+      console.log(gameEndMessage);
+    }
+    runGame(GAME_LEVELS, DOMDisplay);
+  </script>
+</body>

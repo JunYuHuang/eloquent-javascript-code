@@ -39,7 +39,7 @@ class Level {
     });
   }
 
-  touches(pos: Vec, size: Vec, type: EntityString) {
+  touches(pos: Vec, size: Vec, type: ActorString) {
     let xStart = Math.floor(pos.x);
     let xEnd = Math.ceil(pos.x + size.x);
     let yStart = Math.floor(pos.y);
