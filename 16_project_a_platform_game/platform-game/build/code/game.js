@@ -314,7 +314,7 @@ function trackKeys(keys) {
     window.addEventListener("keyup", track);
     return down;
 }
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
+let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 function runAnimation(frameFunc) {
     let lastTime = null;
     function frame(time) {

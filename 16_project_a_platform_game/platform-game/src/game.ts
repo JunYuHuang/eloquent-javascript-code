@@ -374,7 +374,7 @@ function trackKeys(keys: string[]) {
   return down;
 }
 
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
+let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
 function runAnimation(frameFunc: FrameFunction) {
   let lastTime: number | null = null;
