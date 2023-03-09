@@ -238,7 +238,7 @@ class Coin {
 
 const COIN_SIZE = new Vec(0.6, 0.6);
 
-const levelChars: CharToValue = {
+let levelChars: CharToValue = {
   ".": "empty",
   "#": "wall",
   "+": "lava",
