@@ -23,7 +23,7 @@ createServer((request: IncomingMessage, response) => {
 
   handler(request)
     // handles rejected `request` promise
-    .catch((error) => {
+    .catch((error: any) => {
       if (error.status != null) return error;
 
       return {
@@ -145,7 +145,7 @@ methods.DELETE = async function (request: IncomingMessage) {
     stats = await stat(path);
   } catch (error: any) {
     if (error.code !== "ENOENT") throw error;
-    return { status: 204 };
+    else return { status: 204 };
   }
 
   stats.isDirectory() ? await rmdir(path) : await unlink(path);
@@ -182,4 +182,46 @@ methods.PUT = async function (request: IncomingMessage) {
   let path = urlPath(request.url!);
   await pipeStream(request, createWriteStream(path));
   return { status: 204 };
+}
+
+
+
+/*
+Extension from Exercise 20.2 Directory Creation
+- Figure out why it's not working
+*/
+
+import { mkdir } from "node:fs/promises";
+
+methods.MKCOL = async function (request: IncomingMessage) {
+  let path = urlPath(request.url!);
+  let stats: Stats;
+
+  try {
+    // Entity is a file or directory that already exists
+    stats = await stat(path);
+    if (stats.isDirectory()) return { status: 204 };
+    return {
+      status: 400,
+      body: "File with this name already exists"
+    };
+  } catch (error: any) {
+    if (error.code !== "ENOENT") {
+      console.error(`Error processing path '${path}': `, error);
+      throw error;
+    }
+
+    // Entity does not exist; create the directory
+    try {
+      const dir = await mkdir(path);
+      if (dir !== undefined)
+        throw new Error("Failed to create directory");
+      return { status: 204 };
+    } catch (error: any) {
+      return {
+        status: 500,
+        body: `Error creating directory: ${error}`
+      };
+    }
+  }
 }
