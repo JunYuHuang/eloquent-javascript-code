@@ -7,4 +7,4 @@ describe('objHasOwnProperty()', function () {
     //     expect(objHasOwnProperty).toBeDefined();
     // })
 });
-//# sourceMappingURL=index.spec.js.map
+//# sourceMappingURL=search.spec.js.map

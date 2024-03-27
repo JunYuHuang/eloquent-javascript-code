@@ -2,11 +2,11 @@
   "name": "typescript-starter",
   "version": "1.0.0",
   "description": "Basic TS app starter 2023",
-  "main": "index.js",
+  "main": "search.js",
   "scripts": {
     "build": "rimraf ./build/code && tsc",
     "start:dev": "npx nodemon",
-    "start": "npm run build && node build/code/index.js",
+    "start": "npm run build && node build/code/search.js",
     "test": "jest",
     "test:dev": "jest --watchAll"
   },
