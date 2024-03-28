@@ -188,7 +188,6 @@ methods.PUT = async function (request: IncomingMessage) {
 
 /*
 Extension from Exercise 20.2 Directory Creation
-- Figure out why it's not working
 */
 
 import { mkdir } from "node:fs/promises";

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Server Manager</title>
+  </head>
+  <body>
+    <div id="root">
+      <h1>File Server Manager</h1>
+      <h2>Update File</h2>
+      <div>
+        <label for="file-select">Choose a file:</label>
+        <br />
+        <select name="file" id="file-select"></select>
+      </div>
+      <br />
+      <!-- Note: form is submitted via JavaScript only -->
+      <form action="/" method="POST" id="update-file-form">
+        <div>
+          <label for="file-content-textarea">File Content:</label>
+          <br />
+          <textarea
+            name="file-content"
+            id="file-content-textarea"
+            cols="30"
+            rows="10"
+          ></textarea>
+        </div>
+        <br />
+        <button type="submit">Update</button>
+      </form>
+    </div>
+    <script type="module" defer src="./app.js"></script>
+  </body>
+</html>
