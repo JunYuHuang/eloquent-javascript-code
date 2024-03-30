@@ -71,5 +71,5 @@ Note that the checklist below is formatted as below:
 - [x] 20.2 Exercise: Direction Creation
 - [x] 20.3 Exercise: A Public Space On The Web
 - [x] 21.0 Project: Skill-Sharing Website
-- [ ] 21.1 Exercise: Disk Persistence
+- [x] 21.1 Exercise: Disk Persistence
 - [ ] 22.2 Exercise: Comment Field Resets

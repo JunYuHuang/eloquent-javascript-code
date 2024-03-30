@@ -48,6 +48,7 @@ I opted for serve-static. This isn’t the only such server on NPM, but it works
 */
 var node_http_1 = require("node:http");
 var serve_static_1 = __importDefault(require("serve-static"));
+var node_fs_1 = require("node:fs");
 function notFound(request, response) {
     response.writeHead(404, "Not found");
     response.end("<h1>Not found</h1>");
@@ -76,6 +77,15 @@ var SkillShareServer = /** @class */ (function () {
     };
     SkillShareServer.prototype.start = function (port) {
         this.server.listen(port);
+        /*
+        Extension from Exercise 21.1 Disk Persistence
+        - Try to load `talks` from file if it exists
+        */
+        var file = "talks.json";
+        var cannotLoadTalks = (0, node_fs_1.statSync)(file, { throwIfNoEntry: false }) === undefined;
+        if (cannotLoadTalks)
+            return;
+        this.talks = JSON.parse((0, node_fs_1.readFileSync)(file, { encoding: "utf-8" }));
     };
     SkillShareServer.prototype.stop = function () {
         this.server.close();
@@ -269,14 +279,23 @@ SkillShareServer.prototype.waitForChanges = function (time) {
 /*
 Registering a change with updated increases the version property and wakes up all waiting requests.
 */
+var node_fs_2 = require("node:fs");
 SkillShareServer.prototype.updated = function () {
     this.version++;
     var response = this.talkResponse();
     this.waiting.forEach(function (resolve) { return resolve(response); });
     this.waiting = [];
+    /*
+    Extension from Exercise 21.1 Disk Persistence
+    - Save the updated `talks` to a file
+    */
+    (0, node_fs_2.writeFileSync)("talks.json", JSON.stringify(this.talks));
 };
 /*
 That concludes the server code. If we create an instance of SkillShareServer and start it on port 8000, the resulting HTTP server serves files from the public subdirectory alongside a talk-managing interface under the /talks URL.
 */
 new SkillShareServer({}).start(8000);
+/*
+TODO: Extension from Exercise 21.1 Disk Persistence
+*/
 //# sourceMappingURL=server.js.map

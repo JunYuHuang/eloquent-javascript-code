@@ -1,0 +1,20 @@
+{
+  "how to hack": {
+    "title": "how to hack",
+    "presenter": "hackerman",
+    "summary": "git gud scrub",
+    "comments": [
+      { "author": "bob", "message": "how do i git gud hackerman?" },
+      { "author": "hackerman", "message": "git gud 😎" },
+      { "author": "bob", "message": "REEE" }
+    ]
+  },
+  "how do i submit a talk": {
+    "title": "how do i submit a talk",
+    "presenter": "bob",
+    "summary": "ok i got it",
+    "comments": [
+      { "author": "hackerman", "message": "congrats, you are winner!" }
+    ]
+  }
+}

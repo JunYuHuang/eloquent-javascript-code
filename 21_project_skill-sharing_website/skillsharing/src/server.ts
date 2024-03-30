@@ -30,6 +30,7 @@ import {
   IncomingMessage, Server, ServerResponse, createServer
 } from "node:http";
 import serveStatic from "serve-static";
+import { readFileSync, statSync } from "node:fs";
 
 function notFound(
   request: IncomingMessage,
@@ -86,6 +87,19 @@ class SkillShareServer {
 
   start(port: number) {
     this.server.listen(port);
+
+    /*
+    Extension from Exercise 21.1 Disk Persistence
+    - Try to load `talks` from file if it exists
+    */
+    const file = "talks.json";
+    const cannotLoadTalks =
+      statSync(file, { throwIfNoEntry: false }) === undefined;
+    if (cannotLoadTalks) return;
+
+    this.talks = JSON.parse(
+      readFileSync(file, { encoding: "utf-8" })
+    );
   }
 
   stop() {
@@ -341,11 +355,19 @@ SkillShareServer.prototype.waitForChanges = function (time: number) {
 Registering a change with updated increases the version property and wakes up all waiting requests.
 */
 
+import { writeFileSync } from "node:fs";
+
 SkillShareServer.prototype.updated = function () {
   this.version++;
   let response = this.talkResponse();
   this.waiting.forEach((resolve) => resolve(response));
   this.waiting = [];
+
+  /*
+  Extension from Exercise 21.1 Disk Persistence
+  - Save the updated `talks` to a file
+  */
+  writeFileSync("talks.json", JSON.stringify(this.talks));
 };
 
 
