@@ -4,7 +4,7 @@ Repository of coding exercises and projects from the book Eloquent JavaScript 3r
 
 Note that some of the projects or exercise solutions use the updated code from the 4th edition.
 
-## Completed Project & Exercises
+## Completed Projects & Exercises (3rd Edition)
 
 Note that the checklist below is formatted as below:
 
@@ -40,7 +40,7 @@ Note that the checklist below is formatted as below:
 - [x] 9.2 Exercise: Quoting Style
 - [x] 9.3 Exercise: Numbers Again
 - [x] 10.2 Exercise: Roads Module
-- [ ] 11.1 Exercise: Tracking The Scalpel (skipped)
+- [ ] 11.1 Exercise: Tracking The Scalpel _(skipped)_
 - [x] 11.2 Exercise: Building Promise.all
 - [x] 12.0 Project: A Programming Language
 - [x] 12.1 Exercise: Arrays
@@ -56,20 +56,23 @@ Note that the checklist below is formatted as below:
 - [x] 16.1 Exercise: Game Over
 - [x] 16.2 Exercise: Pausing The Game
 - [x] 16.3 Exercise: A Monster
-- [ ] 17.1 Exercise: Shapes (skipped)
-- [ ] 17.2 Exercise: The Pie Chart (skipped)
-- [ ] 17.3 Exercise: A Bouncing Ball (skipped)
+- [ ] 17.1 Exercise: Shapes _(skipped)_
+- [ ] 17.2 Exercise: The Pie Chart _(skipped)_
+- [ ] 17.3 Exercise: A Bouncing Ball _(skipped)_
 - [x] 18.1 Exercise: Content Negotiation
 - [x] 18.2 Exercise: A JavaScript Workbench
 - [x] 18.3 Exercise: Conway's Game Of Life
-- [ ] 19.0 Project: A Pixel Art Editor (skipped)
-- [ ] 19.1 Exercise: Keyboard Bindings (skipped)
-- [ ] 19.2 Exercise: Efficient Drawing (skipped)
-- [ ] 19.3 Exercise: Circles (skipped)
-- [ ] 19.4 Exercise: Proper Lines (skipped)
+- [ ] 19.0 Project: A Pixel Art Editor _(skipped)_
+- [ ] 19.1 Exercise: Keyboard Bindings _(skipped)_
+- [ ] 19.2 Exercise: Efficient Drawing _(skipped)_
+- [ ] 19.3 Exercise: Circles _(skipped)_
+- [ ] 19.4 Exercise: Proper Lines _(skipped)_
 - [x] 20.1 Exercise: Search Tool
 - [x] 20.2 Exercise: Direction Creation
 - [x] 20.3 Exercise: A Public Space On The Web
 - [x] 21.0 Project: Skill-Sharing Website
 - [x] 21.1 Exercise: Disk Persistence
-- [ ] 22.2 Exercise: Comment Field Resets
+- [x] 21.2 Exercise: Comment Field Resets
+- [ ] 22.1 Exercise: Pathfinding _(skipped)_
+- [ ] 22.2 Exercise: Timing _(skipped)_
+- [ ] 22.3 Exercise: Optimizing _(skipped)_
