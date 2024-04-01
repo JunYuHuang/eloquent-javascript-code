@@ -57,11 +57,11 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 // ACTIONS
 /*
-The application state consists of the list of talks and the name of the user, and we’ll store it in a {talks, user} object. We don’t allow the user interface to directly manipulate the state or send off HTTP requests. Rather, it may emit actions that describe what the user is trying to do.
+The application state consists of the list of talks and the name of the user, and we’ll store it in a `{talks, user}` object. We don’t allow the user interface to directly manipulate the state or send off HTTP requests. Rather, it may emit actions that describe what the user is trying to do.
 
-The handleAction function takes such an action and makes it happen. Because our state updates are so simple, state changes are handled in the same function.
+The `handleAction` function takes such an action and makes it happen. Because our state updates are so simple, state changes are handled in the same function.
 
-We’ll store the user’s name in localStorage so that it can be restored when the page is loaded.
+We’ll store the user’s name in `localStorage` so that it can be restored when the page is loaded.
 */
 function handleAction(state, action) {
     switch (action.type) {
@@ -99,7 +99,7 @@ function handleAction(state, action) {
     return state;
 }
 /*
-The actions that need to involve the server make network requests, using fetch, to the HTTP interface described earlier. We use a wrapper function, fetchOK, which makes sure the returned promise is rejected when the server returns an error code.
+The actions that need to involve the server make network requests, using `fetch`, to the HTTP interface described earlier. We use a wrapper function, `fetchOK`, which makes sure the returned promise is rejected when the server returns an error code.
 */
 function fetchOK(url, options) {
     return fetch(url, options).then(function (response) {
@@ -115,7 +115,7 @@ function talkURL(title) {
     return "talks/" + encodeURIComponent(title);
 }
 /*
-When the request fails, we don’t want to have our page just sit there, doing nothing without explanation. So we define a function called reportError, which at least shows the user a dialog that tells them something went wrong.
+When the request fails, we don’t want to have our page just sit there, doing nothing without explanation. So we define a function called `reportError`, which at least shows the user a dialog that tells them something went wrong.
 */
 function reportError(error) {
     alert(String(error));
@@ -134,11 +134,11 @@ function renderUserField(name, dispatch) {
     }));
 }
 /*
-The elt function used to construct DOM elements is the one we used in Chapter 19.
+The `elt` function used to construct DOM elements is the one we used in Chapter 19.
 
-One of the main things that interface components do is creating DOM structure. We again don’t want to directly use the verbose DOM methods for that, so here’s a slightly expanded version of the elt function:
+One of the main things that interface components do is creating DOM structure. We again don’t want to directly use the verbose DOM methods for that, so here’s a slightly expanded version of the `elt` function:
 
-The main difference between this version and the one we used in Chapter 16 is that it assigns properties to DOM nodes, not attributes. This means we can’t use it to set arbitrary attributes, but we can use it to set properties whose value isn’t a string, such as onclick, which can be set to a function to register a click event handler.
+The main difference between this version and the one we used in Chapter 16 is that it assigns properties to DOM nodes, not attributes. This means we can’t use it to set arbitrary attributes, but we can use it to set properties whose value isn’t a string, such as `onclick`, which can be set to a function to register a click event handler.
 
 This allows this convenient style for registering event handlers.
 */
@@ -162,7 +162,7 @@ function elt(type, props) {
 /*
 A similar function is used to render talks, which include a list of comments and a form for adding a new comment.
 
-The "submit" event handler calls form.reset to clear the form’s content after creating a "newComment" action.
+The `"submit"` event handler calls `form.reset` to clear the form’s content after creating a `"newComment"` action.
 
 When creating moderately complex pieces of DOM, this style of programming starts to look rather messy. To avoid this, people often use a templating language, which allows you to write your interface as an HTML file with some special markers to indicate where dynamic elements go. Or they use JSX, a non-standard JavaScript dialect that allows you to write something very close to HTML tags in your program as if they are JavaScript expressions. Both of these approaches use additional tools to pre-process the code before it can be run, which we will avoid in this chapter.
 */
@@ -196,6 +196,61 @@ function renderComment(comment) {
     return elt("p", { className: "comment" }, elt("strong", null, comment.author), ": ", comment.message);
 }
 /*
+Extension from Exercise 21.2 Comment Field Resets
+- add `TalkComponent` class
+*/
+function renderCommentForm(talk, dispatch) {
+    return elt("form", {
+        onsubmit: function (event) {
+            event.preventDefault();
+            var form = event.target;
+            dispatch({
+                type: "newComment",
+                talk: talk.title,
+                message: form.elements.comment.value,
+            });
+            form.reset();
+        },
+    }, elt("input", { type: "text", name: "comment" }), " ", elt("button", { type: "submit" }, "Add comment"));
+}
+function renderTalkBody(talk, dispatch) {
+    return elt("div", null, elt("h2", null, talk.title, " ", elt("button", {
+        type: "button",
+        onclick: function () {
+            dispatch({ type: "deleteTalk", talk: talk.title });
+        },
+    }, "Delete")), elt("div", null, "by ", elt("strong", null, talk.presenter)), elt("p", null, talk.summary));
+}
+var TalkComponent = /** @class */ (function () {
+    function TalkComponent(talk, dispatch) {
+        this.dispatch = dispatch;
+        this.talkBodyDOM = elt("div", null, renderTalkBody(talk, dispatch));
+        this.commentDOM = elt("div", { className: "comments" });
+        this.dom = elt("section", { className: "talk" }, this.talkBodyDOM, this.commentDOM, renderCommentForm(talk, dispatch));
+        this.syncState(talk);
+    }
+    TalkComponent.prototype.syncState = function (talk) {
+        if (talk == this.talk)
+            return;
+        // update talk body / details if needed
+        if (this.talk &&
+            (talk.title !== this.talk.title ||
+                talk.presenter !== this.talk.presenter ||
+                talk.summary !== this.talk.summary)) {
+            this.talkBodyDOM.textContent = "";
+            this.talkBodyDOM.appendChild(renderTalkBody(talk, this.dispatch));
+        }
+        // update comments
+        this.commentDOM.textContent = "";
+        for (var _i = 0, _a = talk.comments; _i < _a.length; _i++) {
+            var comment = _a[_i];
+            this.commentDOM.appendChild(renderComment(comment, this.dispatch));
+        }
+        this.talk = talk;
+    };
+    return TalkComponent;
+}());
+/*
 Finally, the form that the user can use to create a new talk is rendered like this:
 */
 function renderTalkForm(dispatch) {
@@ -215,13 +270,13 @@ function renderTalkForm(dispatch) {
 }
 // POLLING
 /*
-To start the app we need the current list of talks. Since the initial load is closely related to the long polling process—the ETag from the load must be used when polling—we’ll write a function that keeps polling the server for /talks and calls a callback function when a new set of talks is available.
+To start the app we need the current list of talks. Since the initial load is closely related to the long polling process—the `ETag` from the load must be used when polling—we’ll write a function that keeps polling the server for `/talks` and calls a callback function when a new set of talks is available.
 
-This is an async function so that looping and waiting for the request is easier. It runs an infinite loop that, on each iteration, retrieves the list of talks—either normally or, if this isn’t the first request, with the headers included that make it a long polling request.
+This is an `async` function so that looping and waiting for the request is easier. It runs an infinite loop that, on each iteration, retrieves the list of talks—either normally or, if this isn’t the first request, with the headers included that make it a long polling request.
 
-When a request fails, the function waits a moment and then tries again. This way, if your network connection goes away for a while and then comes back, the application can recover and continue updating. The promise resolved via setTimeout is a way to force the async function to wait.
+When a request fails, the function waits a moment and then tries again. This way, if your network connection goes away for a while and then comes back, the application can recover and continue updating. The promise resolved via `setTimeout` is a way to force the async function to wait.
 
-When the server gives back a 304 response, that means a long polling request timed out, so the function should just immediately start the next request. If the response is a normal 200 response, its body is read as JSON and passed to the callback, and its ETag header value is stored for the next iteration.
+When the server gives back a `304` response, that means a long polling request timed out, so the function should just immediately start the next request. If the response is a normal `200` response, its body is read as JSON and passed to the callback, and its `ETag` header value is stored for the next iteration.
 */
 function pollTalks(update) {
     return __awaiter(this, void 0, void 0, function () {
@@ -273,20 +328,39 @@ The following component ties the whole user interface together:
 
 When the talks change, this component redraws all of them. This is simple but also wasteful. We’ll get back to that in the exercises.
 */
+/*
+Extension from Exercise 21.2 Comment Field Resets
+- Update how the app syncs / updates its talks
+*/
 var SkillShareApp = /** @class */ (function () {
     function SkillShareApp(state, dispatch) {
         this.dispatch = dispatch;
         this.talkDOM = elt("div", { className: "talks" });
+        this.talkToComponent = {};
         this.dom = elt("div", null, renderUserField(state.user, dispatch), this.talkDOM, renderTalkForm(dispatch));
         this.syncState(state);
     }
     SkillShareApp.prototype.syncState = function (state) {
         if (state.talks == this.talks)
             return;
-        this.talkDOM.textContent = "";
+        // Create or update talks
+        var talkTitles = new Set();
         for (var _i = 0, _a = state.talks; _i < _a.length; _i++) {
             var talk = _a[_i];
-            this.talkDOM.appendChild(renderTalk(talk, this.dispatch));
+            if (!Object.hasOwn(this.talkToComponent, talk.title)) {
+                this.talkToComponent[talk.title] = new TalkComponent(talk, this.dispatch);
+                this.talkDOM.appendChild(this.talkToComponent[talk.title].dom);
+            }
+            this.talkToComponent[talk.title].syncState(talk);
+            talkTitles.add(talk.title);
+        }
+        // Remove deleted talks
+        for (var _b = 0, _c = Object.entries(this.talkToComponent); _b < _c.length; _b++) {
+            var _d = _c[_b], title = _d[0], component = _d[1];
+            if (talkTitles.has(title))
+                continue;
+            this.talkDOM.removeChild(component.dom);
+            delete this.talkToComponent[title];
         }
         this.talks = state.talks;
     };

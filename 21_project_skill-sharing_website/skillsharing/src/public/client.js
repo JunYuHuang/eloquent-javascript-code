@@ -190,6 +190,96 @@ function renderComment(comment) {
 }
 
 /*
+Extension from Exercise 21.2 Comment Field Resets
+- add `TalkComponent` class
+*/
+
+function renderCommentForm(talk, dispatch) {
+  return elt(
+    "form",
+    {
+      onsubmit(event) {
+        event.preventDefault();
+        let form = event.target;
+        dispatch({
+          type: "newComment",
+          talk: talk.title,
+          message: form.elements.comment.value,
+        });
+        form.reset();
+      },
+    },
+    elt("input", { type: "text", name: "comment" }),
+    " ",
+    elt("button", { type: "submit" }, "Add comment")
+  );
+}
+
+function renderTalkBody(talk, dispatch) {
+  return elt(
+    "div",
+    null,
+    elt(
+      "h2",
+      null,
+      talk.title,
+      " ",
+      elt(
+        "button",
+        {
+          type: "button",
+          onclick() {
+            dispatch({ type: "deleteTalk", talk: talk.title });
+          },
+        },
+        "Delete"
+      )
+    ),
+    elt("div", null, "by ", elt("strong", null, talk.presenter)),
+    elt("p", null, talk.summary)
+  );
+}
+
+class TalkComponent {
+  constructor(talk, dispatch) {
+    this.dispatch = dispatch;
+    this.talkBodyDOM = elt("div", null, renderTalkBody(talk, dispatch));
+    this.commentDOM = elt("div", { className: "comments" });
+    this.dom = elt(
+      "section",
+      { className: "talk" },
+      this.talkBodyDOM,
+      this.commentDOM,
+      renderCommentForm(talk, dispatch)
+    );
+    this.syncState(talk);
+  }
+
+  syncState(talk) {
+    if (talk == this.talk) return;
+
+    // update talk body / details if needed
+    if (
+      this.talk &&
+      (talk.title !== this.talk.title ||
+        talk.presenter !== this.talk.presenter ||
+        talk.summary !== this.talk.summary)
+    ) {
+      this.talkBodyDOM.textContent = "";
+      this.talkBodyDOM.appendChild(renderTalkBody(talk, this.dispatch));
+    }
+
+    // update comments
+    this.commentDOM.textContent = "";
+    for (let comment of talk.comments) {
+      this.commentDOM.appendChild(renderComment(comment, this.dispatch));
+    }
+
+    this.talk = talk;
+  }
+}
+
+/*
 Finally, the form that the user can use to create a new talk is rendered like this:
 */
 
@@ -262,10 +352,15 @@ The following component ties the whole user interface together:
 When the talks change, this component redraws all of them. This is simple but also wasteful. We’ll get back to that in the exercises.
 */
 
+/*
+Extension from Exercise 21.2 Comment Field Resets
+- Update how the app syncs / updates its talks
+*/
 class SkillShareApp {
   constructor(state, dispatch) {
     this.dispatch = dispatch;
     this.talkDOM = elt("div", { className: "talks" });
+    this.talkToComponent = {};
     this.dom = elt(
       "div",
       null,
@@ -275,14 +370,31 @@ class SkillShareApp {
     );
     this.syncState(state);
   }
-
   syncState(state) {
     if (state.talks == this.talks) return;
 
-    this.talkDOM.textContent = "";
+    // Create or update talks
+    const talkTitles = new Set();
     for (let talk of state.talks) {
-      this.talkDOM.appendChild(renderTalk(talk, this.dispatch));
+      if (!Object.hasOwn(this.talkToComponent, talk.title)) {
+        this.talkToComponent[talk.title] = new TalkComponent(
+          talk,
+          this.dispatch
+        );
+        this.talkDOM.appendChild(this.talkToComponent[talk.title].dom);
+      }
+      this.talkToComponent[talk.title].syncState(talk);
+      talkTitles.add(talk.title);
     }
+
+    // Remove deleted talks
+    for (let [title, component] of Object.entries(this.talkToComponent)) {
+      if (talkTitles.has(title)) continue;
+
+      this.talkDOM.removeChild(component.dom);
+      delete this.talkToComponent[title];
+    }
+
     this.talks = state.talks;
   }
 }

@@ -295,7 +295,4 @@ SkillShareServer.prototype.updated = function () {
 That concludes the server code. If we create an instance of SkillShareServer and start it on port 8000, the resulting HTTP server serves files from the public subdirectory alongside a talk-managing interface under the /talks URL.
 */
 new SkillShareServer({}).start(8000);
-/*
-TODO: Extension from Exercise 21.1 Disk Persistence
-*/
 //# sourceMappingURL=server.js.map
